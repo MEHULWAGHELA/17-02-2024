@@ -1,11 +1,27 @@
 const Product = require("../model/product")
 
-const getProduct = (req, res) => {
-    res.send("retrived data successfully")
+const getProduct = async (req, res) => {
+    try {
+        const product = await Product.find()
+        res.status(200).json({
+            message: "retrived data successfully",
+            data: product
+        })
+    }
+    catch (error) {
+        res.status(400).json({
+            message: error.message,
+            success: false
+        })
+    }
 }
 const postProduct = async (req, res) => {
     try {
-        const Data = await Product.create(req.body)
+        const body={
+            ...req.body,
+            productImage:req.file.filename
+        }
+        const Data = await Product.create(body)
         res.status(201).json({
             message: "data added successfully",
             data: Data,
